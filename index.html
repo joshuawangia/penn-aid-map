@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Penn Aid Power Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --ink:#000000; --muted:#4A4A4A; --rule:#DCDCDC;
+  --t-decide:#C9B3C7; --t-ops:#B3C3D6; --t-ally:#B3CEBF; --t-donor:#E2CFAF; --t-info:#CFCBD6;
+  --serif:"EB Garamond", Garamond, "Cormorant Garamond", Georgia, serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 20px 64px}
+h1{font-weight:500;font-size:2.2rem;line-height:1.1;margin:0}
+.label{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);max-width:64ch;margin:10px 0 0}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;margin-top:28px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.mapbox{border:1px solid var(--rule);padding:12px;overflow-x:auto}
+svg{display:block;width:100%;min-width:520px;height:auto}
+svg text{font-family:var(--serif);fill:var(--ink)}
+.ax{stroke:var(--rule);stroke-width:1}
+.qline{stroke:var(--muted);stroke-width:.8;stroke-dasharray:3 4;opacity:.5}
+.qlab{font-size:12px;letter-spacing:.1em;fill:var(--muted)}
+.dot{cursor:pointer;outline:none}
+.dot circle{stroke:#000;stroke-width:0;transition:stroke-width .12s}
+.dot text{font-size:11px;font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dot:hover circle,.dot:focus-visible circle{stroke-width:1.2}
+.dot.on circle{stroke-width:2.2}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:.92rem;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.panel{position:sticky;top:20px;border-top:2px solid var(--ink);padding-top:16px;min-height:300px}
+.panel .tier{margin-bottom:6px}
+.panel h2{font-weight:500;font-size:1.7rem;line-height:1.15;margin:0 0 4px;display:flex;gap:12px;align-items:center}
+.chip{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:600}
+.role{font-style:italic;color:var(--muted);margin:0 0 14px}
+.panel p{margin:0 0 12px}
+.lever{border-left:3px solid var(--rule);padding-left:12px}
+.lever b{display:block;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.nav{display:flex;gap:10px;margin-top:18px}
+button{font-family:var(--serif);font-size:1rem;background:var(--bg);color:var(--ink);border:1px solid var(--ink);padding:4px 14px;cursor:pointer}
+button:hover{background:#F2F2F2}
+button:focus-visible{outline:2px solid var(--t-ops);outline-offset:2px}
+.index{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 32px}
+.index h3{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px}
+.index ul{list-style:none;margin:0;padding:0}
+.index li{display:flex;gap:8px;align-items:center;padding:3px 0;cursor:pointer}
+.index li:hover span:last-child{text-decoration:underline}
+.index li.on span:last-child{font-weight:600}
+.index .n{flex:none;width:20px;height:20px;border-radius:50%;font-size:.72rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.note{font-size:.9rem;color:var(--muted);font-style:italic;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="label">YDSA@Penn · Financial aid campaign · October 2026</div>
+  <h1>Penn Aid Power Map</h1>
+  <p class="lede">Click a number to see who they are, their record, and our lever. Power runs up the page, likely stance runs left to right. Stances are our estimates from the public record.</p>
+
+  <div class="grid">
+    <div>
+      <div class="mapbox">
+        <svg viewBox="0 0 640 490" role="group" aria-label="Power map">
+          <line class="ax" x1="60" y1="440" x2="620" y2="440"/>
+          <line class="ax" x1="60" y1="30" x2="60" y2="440"/>
+          <line class="qline" x1="340" y1="30" x2="340" y2="440"/>
+          <line class="qline" x1="60" y1="235" x2="620" y2="235"/>
+          <text class="qlab" x="70" y="48">PRIMARY TARGETS</text>
+          <text class="qlab" x="610" y="48" text-anchor="end">CHAMPIONS TO ACTIVATE</text>
+          <text class="qlab" x="70" y="430">MONITOR</text>
+          <text class="qlab" x="610" y="430" text-anchor="end">COALITION</text>
+          <text x="60" y="462" font-size="12">Resistant</text>
+          <text x="340" y="462" font-size="12" text-anchor="middle">Neutral</text>
+          <text x="620" y="462" font-size="12" text-anchor="end">Supportive</text>
+          <text x="340" y="482" font-size="12" text-anchor="middle" style="fill:var(--muted)">Likely stance on expanded aid (estimated)</text>
+          <text x="22" y="235" font-size="12" text-anchor="middle" transform="rotate(-90 22 235)" style="fill:var(--muted)">Power over aid and its disclosure</text>
+          <g id="dots"></g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--t-decide)"></i>Decides</span>
+        <span><i class="sw" style="background:var(--t-ops)"></i>Runs the system</span>
+        <span><i class="sw" style="background:var(--t-info)"></i>Controls information</span>
+        <span><i class="sw" style="background:var(--t-ally)"></i>Allies and pressure</span>
+        <span><i class="sw" style="background:var(--t-donor)"></i>Donors</span>
+      </div>
+    </div>
+
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <div class="index" id="index"></div>
+  <p class="note">Sources for every entry are in "The State of Aid at Penn," §Sources. Use the arrow keys to step through people.</p>
+</div>
+
+<script>
+const P = [
+ // n, name, tier, stance(-2..2), power(0..10), role, record, lever
+ [1,"Ramanan Raghavendran","decide",-0.5,9.6,"Chair, Board of Trustees · ENG/W ’89, LPS ’15","Trustee since 2014. Named chair in Jan 2024 after Scott Bok resigned; the first person of color in the role. Former chair of the SAS Board of Advisors. Chairs both presidential search committees, and in Oct 2026 refused the Faculty Senate's request to rebalance the search committee.","The board votes on tuition and aid each March. His priority is stability and the search. Frame aid as a test of what the next president will be held to."],
+ [2,"J. Larry Jameson","decide",0.5,9,"President, through 30 June 2027","Interim president from Dec 2023, confirmed in Mar 2025. Previously dean of Perelman and EVP of the Health System (2011). Launched the Quaker Commitment in Nov 2024. Penn Forward names affordability as a goal.","He is leaving. A named aid expansion is a legacy he can claim, so the ask should be built as his final commitment."],
+ [3,"Mark Dingfield","decide",-0.5,9,"Executive Vice President (CFO) since Aug 2025","Joined in 2017 as associate provost for finance, then VP Finance & Treasurer from 2022. Led the Quaker Commitment launch. Previously at Princeton and Microsoft. Publicly calls aid an 'area of highest priority' while citing the excise tax as a constraint.","He controls the numbers. Answer the tax argument with his own figures: $6B+ endowment growth against a ~$330M undergraduate aid budget."],
+ [4,"John L. Jackson Jr.","decide",0.5,8,"Provost since June 2023","Anthropologist and author of Harlemworld: Doing Race and Class in Contemporary Black America. Former dean of SP2 and Annenberg, and former senior advisor on diversity. Oversees admissions and appointed the P1P co-directors.","His scholarship is on race and class. FGLI cost-of-attendance evidence speaks directly to his record."],
+ [5,"David Blitzer","decide",-0.5,8,"Trustee · Chair, Budget and Finance Committee","Chairs the committee that previews the budget, tuition and endowment figures before the full board votes. In Sept 2026 the committee heard the endowment rose to $31.1B.","This is where the March numbers are actually set. A public written ask to the committee forces the issue onto the record."],
+ [6,"Marc McMorris","decide",-1,7,"Trustee Vice Chair · Chair, Investment Board · C ’90, W ’94","Oversees endowment investment. Sat on both the 2021 and 2026 presidential consultative committees.","Endowment payout policy runs through him. The ask: a higher share of undergraduate aid funded from endowment, above the current ~27%."],
+ [7,"Colleen O'Neill","decide",-0.3,6.5,"VP Finance & Treasurer since April 2026","Dingfield's successor as treasurer. Sits on the presidential consultative committee. Student Financial Services has historically reported to this office.","New in the role, so her positions aren't set yet. Request a meeting early."],
+ [8,"Herald Chen","decide",1,6.5,"Trustee · Chair, Undergraduate Financial Aid Leadership Council · ENG/W ’93","Leads the donor council for named scholarships and P1P (chair since 2022). The only person who sits both on the board and at the top of aid fundraising.","The most natural champion on the board for aid. Use him to bring the ask into trustee conversations."],
+ [9,"Catherine O'Hern Lyons","decide",0,6,"Trustee · Chair, Education Committee · C ’86","On the presidential search committee and the consultative committee.","The Education Committee is the trustee venue for student-experience issues. Use it for cost-of-attendance testimony."],
+ [10,"Whitney Soule","ops",-0.2,5.5,"Vice Provost and Dean of Admissions since July 2021","Previously SVP and dean of admissions and student aid at Bowdoin. Presents admissions numbers to the trustees each June. Has quietly scaled back legacy preference.","Admissions sells affordability. Point to the gap between marketing ('need-based') and the 19% of aided students who still borrow."],
+ [11,"Mariana Valdes-Fauli","ops",0,5,"AVP, Student Registration & Financial Services","Came from the University of Miami, where she built its one-stop service center. Holds a J.D. The public face of the Oct 2026 cost calculator and AI chatbot.","Owns how aid policy is carried out: expense budgets, off-campus allowances, appeals. Bring her specific packaging fixes."],
+ [12,"Elaine Papas Varas","ops",0.5,4,"Senior Director of Financial Aid","30+ years in financial aid (Drexel, Rutgers, UMDNJ). Oversees Title IV and Penn's own aid programs. Has referenced a financial aid student committee that gives Penn feedback.","The committee she mentioned is a formal way in. Get YDSA members seated on it."],
+ [13,"Maryann O'Leary Salas","ops",0.5,3,"Exec. Director of Development, UG Financial Aid and Penn First Plus","Runs aid fundraising and staffs the donor council.","Knows which donor money is restricted and which is flexible. Useful for mapping where money could move."],
+ [14,"Diana Robertson","ally",1.5,3.5,"Bozza Family P1P Faculty Co-Director (Sept 2025) · Wharton Legal Studies & Business Ethics","As Wharton vice dean she backed Wharton FGLI and set up a student support fund. She has said she was 'especially concerned about the hidden costs' FGLI students face.","Her 'hidden costs' framing covers meal plans, fees and travel. She is the bridge from the dining campaign to aid."],
+ [15,"Fayyaz Vellani","ally",1.5,2.8,"Bozza Family P1P Faculty Co-Director (June 2024)","Co-leads the P1P office for FGLI students, which includes the Shleifer Family P1P Center in College Hall.","Can get P1P student testimony and staff knowledge in front of the people deciding."],
+ [16,"Russell Composto","ally",1,4.2,"Vice Provost for Undergraduate Education (July 2025)","Former P1P faculty co-director (2023–25). Materials science professor in SEAS.","An ally inside the provost's office who knows FGLI costs firsthand."],
+ [17,"Kathleen Brown / Faculty Senate","ally",1.2,3.8,"Faculty Senate tri-chairs · Brown: David Boies Professor of History","The tri-chairs formally objected to the search committee's makeup, and Raghavendran rejected their request. Brown sits on the consultative committee.","Faculty are already in conflict with the trustees over governance. An affordability-and-transparency coalition is available."],
+ [18,"Musab Chummun","ally",1,3,"Undergraduate Assembly President · C ’27","Ran unopposed with VP Moe Mansour on 'A Penn That Prioritizes You', which names school funding. Sits on the consultative committee. Meets with Jameson and Jackson.","A UA resolution plus his seat on the search committee carries the ask into official channels."],
+ [19,"DP Editorial Board","ally",1.8,2.5,"The Daily Pennsylvanian","June 2026 editorial: 'Nothing is need-based when tuition is $100,000'. It cited the 19% borrowing figure.","Already on record. Pitch op-eds and data stories."],
+ [20,"Scott & Elena Shleifer","donor",1,5,"Donors · Scott W ’99, Tiger Global private equity","$20M in Oct 2026 for middle-income aid plus a $3M matching challenge. Earlier gave $18M (2022) for P1P, and the P1P center bears their name. Forbes puts his net worth at $3.8B.","Donors who give for a cause want to see results. Show what their gifts haven't fixed yet, and present the cost gap as the next challenge to fund."],
+ [21,"Greg & Alexandra Mondre","donor",1.3,5,"Donors · Greg W ’96","$20M in May 2026 created the Mondre Family Initiative (1,000+ middle-income families a year). Founding member of the aid donor council.","Has a voice in aid policy. Middle-income framing reaches him."],
+ [22,"Karu Kozuma","ops",0.3,4.5,"Vice Provost for University Life (as of 2023)","Oversees 16 student-life departments, including the cultural centers. Penn GSE alum. Previously at Columbia and Middlebury.","Controls student-life funding such as emergency grants. Confirm he is still in the role."],
+ [23,"Wendy White","info",-1.5,7,"Senior Vice President and General Counsel since 2003","Penn alum and former associate counsel in the Clinton White House. Leads an office of nearly 40 lawyers and has a direct line to Jameson. Paid well over $1M in 2024. Her office recommended removing DEI references (Feb 2025), and the DP calls it 'intentionally opaque'. It is defending the 568 case.","The source of 'declined to comment'. You won't win her over. The goal is to make silence cost more in reputation than disclosure costs in legal risk."],
+ [24,"Trevor Lewis","info",-0.8,6,"VP, Budget Planning & Analysis","Sets budget parameters, advises leadership on central resource allocation, and presents the budget to trustees, faculty and students. He told trustees the excise tax 'effectively tripl[es]' Penn's rate. He was interim treasurer from Aug 2025 until O'Neill started.","He decides what the published budget shows. Ask for the aid line broken out: endowment, gifts, unrestricted operating funds."],
+ [25,"Matthew Grossman","info",-1,5,"VP, University Communications since April 2025","Previously chief brand and communications officer at Techstars, and before that 12 years running Disney communications in Europe, the Middle East and Africa. Edelman and MPAA before that. Runs Penn Today and the spokesperson function.","His job is to protect the brand. A data request with a deadline, plus a reporter asking about it, puts the burden on his office."],
+ [26,"Medha Narvekar","info",-0.8,4.5,"VP and University Secretary","Runs trustee governance: agendas, minutes, open-meeting rules (no speaking unless invited, no signs) and search logistics. The 2021 search was staffed through her office.","Controls access to the board. Ask her in writing for a public comment period at stated meetings."]
+];
+
+const tierVar={decide:"--t-decide",ops:"--t-ops",ally:"--t-ally",donor:"--t-donor",info:"--t-info"};
+const tierName={decide:"Decides",ops:"Runs the system",info:"Controls information",ally:"Allies and pressure",donor:"Donors"};
+const tierOrder=["decide","ops","info","ally","donor"];
+const sx=a=>60+(a+2)/4*560, sy=p=>440-p/10*410;
+const NS="http://www.w3.org/2000/svg", g=document.getElementById("dots");
+const panel=document.getElementById("panel"), idx=document.getElementById("index");
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const order=[]; tierOrder.forEach(t=>P.filter(p=>p[2]===t).forEach(p=>order.push(p[0])));
+const byN=Object.fromEntries(P.map(p=>[p[0],p]));
+let cur=null;
+
+P.forEach(([n,name,t,a,p])=>{
+  const d=document.createElementNS(NS,"g");
+  d.setAttribute("class","dot"); d.setAttribute("tabindex","0"); d.setAttribute("role","button");
+  d.setAttribute("aria-label",n+". "+name); d.dataset.n=n;
+  const c=document.createElementNS(NS,"circle");
+  c.setAttribute("cx",sx(a)); c.setAttribute("cy",sy(p)); c.setAttribute("r",11);
+  c.setAttribute("style",`fill:var(${tierVar[t]})`);
+  const tx=document.createElementNS(NS,"text"); tx.setAttribute("x",sx(a)); tx.setAttribute("y",sy(p)); tx.textContent=n;
+  d.append(c,tx); g.appendChild(d);
+  d.addEventListener("click",()=>show(n));
+  d.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show(n);}});
+});
+
+tierOrder.forEach(t=>{
+  const col=document.createElement("div");
+  col.innerHTML=`<h3>${tierName[t]}</h3><ul></ul>`;
+  P.filter(p=>p[2]===t).forEach(([n,name])=>{
+    const li=document.createElement("li"); li.dataset.n=n;
+    li.innerHTML=`<span class="n" style="background:var(${tierVar[t]})">${n}</span><span>${esc(name)}</span>`;
+    li.addEventListener("click",()=>{show(n);panel.scrollIntoView({behavior:"smooth",block:"nearest"});});
+    col.querySelector("ul").appendChild(li);
+  });
+  idx.appendChild(col);
+});
+
+function show(n){
+  cur=n; const [num,name,t,,,role,rec,lev]=byN[n];
+  panel.innerHTML=`<div class="label tier">${tierName[t]}</div>
+    <h2><span class="chip" style="background:var(${tierVar[t]})">${num}</span>${esc(name)}</h2>
+    <p class="role">${esc(role)}</p>
+    <p>${esc(rec)}</p>
+    <p class="lever"><b>Lever</b>${esc(lev)}</p>
+    <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>`;
+  document.getElementById("prev").onclick=()=>step(-1);
+  document.getElementById("next").onclick=()=>step(1);
+  document.querySelectorAll(".dot,.index li").forEach(el=>el.classList.toggle("on",+el.dataset.n===n));
+}
+function step(d){const i=order.indexOf(cur);show(order[(i+d+order.length)%order.length]);}
+document.addEventListener("keydown",e=>{
+  if(e.target.closest&&e.target.closest("button"))return;
+  if(e.key==="ArrowRight"||e.key==="ArrowDown"){e.preventDefault();step(1);}
+  if(e.key==="ArrowLeft"||e.key==="ArrowUp"){e.preventDefault();step(-1);}
+});
+show(3);
+</script>
+</body>
+</html>
